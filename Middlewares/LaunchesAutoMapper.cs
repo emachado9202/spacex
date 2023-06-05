@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SpaceX.Models;
+using SpaceX.Models.Launches;
 using System;
 
 namespace SpaceX.Middlewares

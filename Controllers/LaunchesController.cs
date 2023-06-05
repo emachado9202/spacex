@@ -5,6 +5,7 @@ using GraphQL.Client.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using SpaceX.Models;
 using SpaceX.Models.Launch;
+using SpaceX.Models.Launches;
 
 namespace SpaceX.Controllers;
 

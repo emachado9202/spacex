@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace SpaceX.Models
+namespace SpaceX.Models.Launches
 {
 	public class LaunchesPaginationModel
 	{

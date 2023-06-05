@@ -1,5 +1,5 @@
 ﻿using System;
-namespace SpaceX.Models
+namespace SpaceX.Models.Launches
 {
 	public class LaunchesModel
 	{
