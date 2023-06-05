@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SpaceX.Models
 {
-	public class LaunchPaginationModel
+	public class LaunchesPaginationModel
 	{
-		public LaunchPaginationModel()
+		public LaunchesPaginationModel()
 		{
 			Page = 1;
 			Per_Page = 10;

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using GraphQL;
 using GraphQL.Client.Abstractions;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ public class LaunchesController : ControllerBase
     }
 
     [HttpGet(Name = "GetLaunches")]
-    public async Task<ActionResult<LaunchResultModel>> Get([FromQuery] LaunchPaginationModel model)
+    public async Task<ActionResult<LaunchesResultModel>> Get([FromQuery] LaunchesPaginationModel model)
     {
         int offset = (model.Page - 1) * model.Per_Page;
 
@@ -41,10 +42,11 @@ public class LaunchesController : ControllerBase
             Variables = new { limit, offset }
         };
 
-        var response = await _client.SendQueryAsync<LaunchDataModel>(query);
+        var response = await _client.SendQueryAsync<LaunchesDataModel>(query);
 
-        var result = response.Data.launches.Select(x => _mapper.Map<LaunchResultModel>(x));
+        var result = response.Data.launches.Select(x => _mapper.Map<LaunchesResultModel>(x));
 
         return Ok(result);
     }
+
 }

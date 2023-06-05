@@ -1,9 +1,9 @@
 ﻿using System;
 namespace SpaceX.Models
 {
-	public class LaunchModel
+	public class LaunchesModel
 	{
-		public LaunchModel()
+		public LaunchesModel()
 		{
 		}
 

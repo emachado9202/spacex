@@ -8,10 +8,9 @@ namespace SpaceX.Middlewares
 	{
 		public LaunchesAutoMapper()
 		{
-            CreateMap<LaunchModel, LaunchResultModel>()
+            CreateMap<LaunchesModel, LaunchesResultModel>()
                 .ForMember(dest => dest.Name,
                            opt => opt.MapFrom(src => src.Mission_Name));
-            CreateMap<LaunchResultModel, LaunchModel>();
         }
 	}
 }
