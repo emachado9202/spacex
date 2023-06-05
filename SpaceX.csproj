@@ -19,9 +19,13 @@
   <ItemGroup>
     <None Remove="Models\" />
     <None Remove="Middlewares\" />
+    <None Remove="Models\Launches\" />
+    <None Remove="Models\Launch\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Middlewares\" />
+    <Folder Include="Models\Launches\" />
+    <Folder Include="Models\Launch\" />
   </ItemGroup>
 </Project>

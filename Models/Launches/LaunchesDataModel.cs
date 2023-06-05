@@ -7,7 +7,7 @@ namespace SpaceX.Models
 		{
 		}
 
-		public LaunchesModel[] launches { get; set; }
+		public LaunchesModel[] Launches { get; set; }
 	}
 }
 

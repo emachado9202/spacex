@@ -4,6 +4,7 @@ using GraphQL;
 using GraphQL.Client.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using SpaceX.Models;
+using SpaceX.Models.Launch;
 
 namespace SpaceX.Controllers;
 
@@ -44,9 +45,45 @@ public class LaunchesController : ControllerBase
 
         var response = await _client.SendQueryAsync<LaunchesDataModel>(query);
 
-        var result = response.Data.launches.Select(x => _mapper.Map<LaunchesResultModel>(x));
+        var result = response.Data.Launches.Select(x => _mapper.Map<LaunchesResultModel>(x));
 
         return Ok(result);
     }
 
+    [ResponseCache(Duration = 120, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new string[] { "id" })]
+    [HttpGet("{id}", Name = "GetLaunch")]
+    public async Task<ActionResult<LaunchResultModel>> Get(string id)
+    {
+        var query = new GraphQLRequest
+        {
+            Query = @"
+                query LaunchQuery($launchId: ID!) {
+                  launch(id: $launchId) {
+                    id
+                    launch_date_local
+                    mission_name
+                    rocket {
+                      rocket_name
+                      rocket {
+                        first_flight
+                        success_rate_pct
+                      }
+                    }
+                  }
+                }
+            ",
+            Variables = new { launchId = id  }
+        };
+
+        var response = await _client.SendQueryAsync<LaunchDataModel>(query);
+
+        if (response.Data.Launch == null)
+        {
+            return NotFound();
+        }
+
+        var result = _mapper.Map<LaunchResultModel>(response.Data.Launch);
+
+        return Ok(result);
+    }
 }
