@@ -7,6 +7,7 @@ namespace SpaceX.Models
 		{
 		}
 
+		public string Id { get; set; }
 		public string Mission_Name { get; set; }
 
     }

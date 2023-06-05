@@ -33,6 +33,7 @@ public class LaunchesController : ControllerBase
             Query = @"
                 query LaunchesQuery($limit: Int, $offset: Int) {
                     launches(limit: $limit, offset: $offset) {
+                        id,
                         mission_name
                     }
                 }
