@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddResponseCaching();
+builder.Services.AddMemoryCache();
 
 
 var app = builder.Build();
@@ -37,7 +37,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseResponseCaching();
 
 app.Run();
 

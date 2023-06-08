@@ -3,6 +3,7 @@ using AutoMapper;
 using GraphQL;
 using GraphQL.Client.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using SpaceX.Models;
 using SpaceX.Models.Launch;
 using SpaceX.Models.Launches;
@@ -16,12 +17,14 @@ public class LaunchesController : ControllerBase
     private readonly ILogger<LaunchesController> _logger;
     private readonly IGraphQLClient _client;
     private readonly IMapper _mapper;
+    private readonly IMemoryCache _memoryCache;
 
-    public LaunchesController(ILogger<LaunchesController> logger, IGraphQLClient client, IMapper mapper)
+    public LaunchesController(ILogger<LaunchesController> logger, IGraphQLClient client, IMapper mapper, IMemoryCache memoryCache)
     {
         _logger = logger;
         _client = client;
         _mapper = mapper;
+        _memoryCache = memoryCache;
     }
 
     [HttpGet(Name = "GetLaunches")]
@@ -51,13 +54,14 @@ public class LaunchesController : ControllerBase
         return Ok(result);
     }
 
-    [ResponseCache(Duration = 120, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new string[] { "id" })]
     [HttpGet("{id}", Name = "GetLaunch")]
     public async Task<ActionResult<LaunchResultModel>> Get(string id)
     {
-        var query = new GraphQLRequest
+        if (!_memoryCache.TryGetValue($"launch-{id}", out LaunchResultModel cacheValue))
         {
-            Query = @"
+            var query = new GraphQLRequest
+            {
+                Query = @"
                 query LaunchQuery($launchId: ID!) {
                   launch(id: $launchId) {
                     id
@@ -73,18 +77,27 @@ public class LaunchesController : ControllerBase
                   }
                 }
             ",
-            Variables = new { launchId = id  }
-        };
+                Variables = new { launchId = id }
+            };
 
-        var response = await _client.SendQueryAsync<LaunchDataModel>(query);
+            var response = await _client.SendQueryAsync<LaunchDataModel>(query);
 
-        if (response.Data.Launch == null)
-        {
-            return NotFound();
+            if (response.Data.Launch == null)
+            {
+                return NotFound();
+            }
+
+            var result = _mapper.Map<LaunchResultModel>(response.Data.Launch);
+
+            cacheValue = result;
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromSeconds(120));
+
+            _memoryCache.Set($"launch-{id}", cacheValue, cacheEntryOptions);
         }
 
-        var result = _mapper.Map<LaunchResultModel>(response.Data.Launch);
 
-        return Ok(result);
+        return Ok(cacheValue);
     }
 }
